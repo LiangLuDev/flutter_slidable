@@ -462,6 +462,9 @@ class Slidable extends StatefulWidget {
     this.enabled = true,
     this.dismissal,
     this.controller,
+    this.onDragStart,
+    this.onDragUpdate,
+    this.onDragEnd,
     double fastThreshold,
   })  : assert(actionPane != null),
         assert(direction != null),
@@ -534,6 +537,10 @@ class Slidable extends StatefulWidget {
 
   /// The threshold used to know if a movement was fast and request to open/close the actions.
   final double fastThreshold;
+
+  final GestureDragStartCallback onDragStart;
+  final GestureDragUpdateCallback onDragUpdate;
+  final GestureDragEndCallback onDragEnd;
 
   /// The state from the closest instance of this class that encloses the given context.
   static SlidableState of(BuildContext context) {
@@ -743,6 +750,7 @@ class SlidableState extends State<Slidable>
   }
 
   void _handleDragStart(DragStartDetails details) {
+    widget.onDragStart(details);
     _dragUnderway = true;
     widget.controller?.activeState = this;
     _dragExtent =
@@ -753,6 +761,7 @@ class SlidableState extends State<Slidable>
   }
 
   void _handleDragUpdate(DragUpdateDetails details) {
+    widget.onDragUpdate(details);
     if (widget.controller != null && widget.controller.activeState != this) {
       return;
     }
@@ -779,6 +788,7 @@ class SlidableState extends State<Slidable>
   }
 
   void _handleDragEnd(DragEndDetails details) {
+    widget.onDragEnd(details);
     if (widget.controller != null && widget.controller.activeState != this) {
       return;
     }
